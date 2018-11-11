@@ -11,7 +11,7 @@ resource "aws_key_pair" "default"{
 
 
 
-resource "aws_instance" "spark" {
+resource "aws_instance" "celery" {
   ami             = "${var.aws_ami}"
   instance_type   = "${var.instance_type}"
   key_name        = "${aws_key_pair.default.id}"
@@ -20,7 +20,7 @@ resource "aws_instance" "spark" {
   security_groups = ["${aws_security_group.ssh.name}", "${aws_security_group.rpc.name}"]
   
   tags {
-    Name = "spark"
+    Name = "celery"
   }
 
   connection {
@@ -28,9 +28,18 @@ resource "aws_instance" "spark" {
     user        = "${var.user}"
     private_key = "${file("${var.private_key_path}")}"
   }
+
+   provisioner "remote-exec" {
+    inline = [
+      "mkdir resources",
+      "cd  resources",
+      "mkdir celery"
+    ]
+  }
+
   provisioner "file" {
-    source = "../resources/spark/"
-    destination = "/home/${var.user}"
+    source = "../resources/celery/"
+    destination = "/home/${var.user}/resources/celery"
   }
 
   provisioner "remote-exec" {
