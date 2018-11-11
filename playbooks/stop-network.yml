@@ -1,0 +1,12 @@
+---
+  - name: Stop kafka Nodes
+    hosts: kafka
+    gather_facts: false
+    remote_user: ec2-user
+    tasks:
+      - name: Stop kafka Client
+        command: docker-compose down
+        register: node_result
+
+      
+  
