@@ -31,15 +31,13 @@ resource "aws_instance" "celery" {
 
    provisioner "remote-exec" {
     inline = [
-      "mkdir resources",
-      "cd  resources",
       "mkdir celery"
     ]
   }
 
   provisioner "file" {
-    source = "../resources/celery/"
-    destination = "/home/${var.user}/resources/celery"
+    source = "../celery/"
+    destination = "/home/${var.user}/celery"
   }
 
   provisioner "remote-exec" {

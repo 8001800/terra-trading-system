@@ -23,5 +23,5 @@
         with_items:
             - "docker-compose up -d --build"
         args:
-           chdir: ~/resources/celery/
+           chdir: ~/celery/
         register: node_result
