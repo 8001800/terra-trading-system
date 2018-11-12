@@ -10,14 +10,4 @@
            chdir: ~/resources/kafka0/
         register: node_result
 
-      
-  - name: Stop Celery Nodes
-    hosts: celery
-    gather_facts: false
-    remote_user: ec2-user
-    tasks:
-      - name: Stop Celery Client
-        command: docker-compose down
-        args:
-           chdir: ~/celery/
-        register: node_result
+ 

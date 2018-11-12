@@ -6,7 +6,7 @@ import json
 
 def handle_message(msg):
     print(msg)
-    producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    
     producer.send('foobar', json.dumps(msg))
 
 
@@ -20,7 +20,8 @@ for line in f:
         bootstrap_servers = line.split("=")[1].replace(" ","").replace("\"","").replace("\n","")  
         
 
-producer = KafkaProducer(bootstrap_servers=bootstrap_servers)
+producer = KafkaProducer(bootstrap_servers=bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+
 
 
 client = Client(api_key=PUBLIC, api_secret=SECRET, requests_params={"timeout": 30})

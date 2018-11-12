@@ -1,3 +1,4 @@
 celery==4.2.0
 redis==2.10.6
 python-binance
+kafka-python

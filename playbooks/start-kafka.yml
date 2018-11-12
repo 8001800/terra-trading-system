@@ -22,17 +22,4 @@
            chdir: ~/resources/kafka0/
         register: node_result
 
-  
-     
-  - name: Start Celery Nodes
-    hosts: celery
-    gather_facts: false
-    remote_user: ec2-user
-    tasks:
-      - name: Start celery
-        command: "{{item}}"
-        with_items:
-            - "docker-compose up -d --build"
-        args:
-           chdir: ~/celery/
-        register: node_result
+
