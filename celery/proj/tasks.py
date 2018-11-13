@@ -1,10 +1,10 @@
-import os
-from celery import Celery
+from __future__ import absolute_import
 import time
 from binance.client import Client
 from binance.websockets import BinanceSocketManager
 from kafka import KafkaProducer
 import json
+from proj.celery import app
 
 def handle_message(msg,producer):
     print(msg)
@@ -21,14 +21,6 @@ for line in f:
 
 
 #producer = KafkaProducer(bootstrap_servers=bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-
-
-app = Celery('proj',broker="redis://localhost:6379")
-
-app.config_from_object("proj")
-#app.conf.result_backend = 'redis://localhost:6379/0'
-#app.autodiscover_tasks()
-print(bootstrap_servers)
 
 @app.task
 def add():
