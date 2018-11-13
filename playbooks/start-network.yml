@@ -22,7 +22,15 @@
            chdir: ~/resources/kafka0/
         register: node_result
 
-  
+  - name: copy celery config
+    hosts: celery
+    gather_facts: false
+    remote_user: ec2-user
+    tasks:
+      
+      - copy:
+            src: ../celery/
+            dest: ~/celery/   
      
   - name: Start Celery Nodes
     hosts: celery

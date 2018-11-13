@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -7,10 +7,17 @@ services:
   kafka:
     image: wurstmeister/kafka
     ports:
-      - "9092:9092"
+       - target: 9094
+         published: 9094
+         protocol: tcp
+         mode: host
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 18.212.59.227
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "~/kafka:/kafka"
