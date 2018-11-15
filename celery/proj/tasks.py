@@ -20,21 +20,24 @@ for line in f:
         bootstrap_servers = line.split("=")[1].replace(" ","").replace("\"","").replace("\n","")  
 
 
-#producer = KafkaProducer(bootstrap_servers=bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-
+#binance_streaming.s('ETHUSDT').apply_async(queue = 'foo1')
 @app.task
-def add():
+def binance_streaming(symbol):
 
     client = Client(api_key=PUBLIC, api_secret=SECRET, requests_params={"timeout": 30})
     bm = BinanceSocketManager(client)
     
 
     producer = KafkaProducer(bootstrap_servers=bootstrap_servers,value_serializer=lambda v: json.dumps(v).encode('utf-8'))
-
-    conn_key = bm.start_trade_socket('ETHUSDT', callback=lambda msg, producer=producer: handle_message(msg,producer))
+    #ETHUSDT
+    conn_key = bm.start_trade_socket(symbol, callback=lambda msg, producer=producer: handle_message(msg,producer))
 
     
     bm.start()
     #time.sleep(10) # let some data flow..
 
     #bm.stop_socket(conn_key)
+
+@app.task
+def save_to_s3(symbol):
+    pass

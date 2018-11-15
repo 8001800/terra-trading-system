@@ -9,12 +9,12 @@
             src: ../celery/
             dest: ~/celery/     
 
-  - name: Start Celery Nodes
+  - name: Start Reids Nodes
     hosts: celery
     gather_facts: false
     remote_user: ec2-user
     tasks:
-      - name: Start celery
+      - name: Start Redis
         command: "{{item}}"
         with_items:
             - "docker-compose up -d --build"

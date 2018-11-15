@@ -1,3 +1,4 @@
 binance_key      = ""
 binance_secret   = ""
 bootstrap_servers= ""
+bucketName       = ""

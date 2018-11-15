@@ -7,24 +7,24 @@ services:
     ports:
       - "6379:6379"
   
-  celery:
-    build: .
-    command: celery -A proj.tasks worker -l info
-    volumes:
-      - .:/code
-    depends_on:
-      - redis
-    network_mode: "host"
-    ports:
-      - "8000:8000"
+#  celery:
+#    build: .
+#    command: celery -A proj.tasks worker -l info
+#    volumes:
+#      - .:/code
+#    depends_on:
+#      - redis
+#    network_mode: "host"
+#    ports:
+#      - "8000:8000"
 
-  celery-beat:
-    build: .
-    command: celery -A proj.tasks beat -l info
-    volumes:
-      - .:/code
-    depends_on:
-      - redis
-    network_mode: "host"
-    ports:
-      - "8000:8000"
+#  celery-beat:
+#    build: .
+#    command: celery -A proj.tasks beat -l info
+#    volumes:
+#      - .:/code
+#    depends_on:
+#      - redis
+#    network_mode: "host"
+#    ports:
+#      - "8000:8000"
