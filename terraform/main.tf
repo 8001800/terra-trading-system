@@ -48,9 +48,9 @@ resource "aws_instance" "celery" {
 
 
 resource "aws_instance" "kafka" {
-  count           = 1
+  count           = 3
   ami             = "${var.aws_ami}"
-  instance_type   = "${var.instance_type}"
+  instance_type   = "${var.instance_type_a1}"
   key_name        = "${aws_key_pair.default.id}"
   
   
@@ -69,16 +69,21 @@ resource "aws_instance" "kafka" {
 
   provisioner "remote-exec" {
     inline = [
+      "mkdir zookeeper",
+      "mkdir zookeeper/conf",
       "mkdir resources",
       "cd  resources",
-      "mkdir kafka${count.index}"
+      "mkdir kafka",
+      "mkdir zookeeper"
     ]
 }
 
   provisioner "file" {
-    source = "../resources/kafka${count.index}/"
-    destination = "/home/${var.user}/resources/kafka${count.index}/"
+    source = "../resources/"
+    destination = "/home/${var.user}/resources/"
   }
+
+
 
 
   provisioner "remote-exec" {

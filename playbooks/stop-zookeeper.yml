@@ -1,0 +1,12 @@
+---
+
+  - name: Stop Zookeeper Nodes
+    hosts: kafka
+    gather_facts: false
+    remote_user: ec2-user
+    tasks:
+      - name: Stop Zookeeper Client
+        command: docker-compose down
+        args:
+           chdir: ~/resources/zookeeper/
+        register: node_result

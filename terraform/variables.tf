@@ -23,6 +23,10 @@ variable "instance_type" {
   description = "Instance type"
 }
 
+variable "instance_type_a1" {
+  description = "Instance type"
+}
+
 variable "public_key_path" {
   description = "SSH public key path"
 }

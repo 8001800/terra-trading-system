@@ -1,13 +1,23 @@
 ---
   - name: copy kafka config
-    hosts: kafka
+    hosts: kafka0
     gather_facts: false
     remote_user: ec2-user
     tasks:
       
       - copy:
-            src: ../resources/kafka0/
-            dest: ~/resources/kafka0/
+            src: ../resources/kafka/env/0.env
+            dest: ~/resources/kafka/.env
+
+  - name: copy kafka config
+    hosts: kafka1
+    gather_facts: false
+    remote_user: ec2-user
+    tasks:
+      
+      - copy:
+            src: ../resources/kafka/env/1.env
+            dest: ~/resources/kafka/.env
 
   - name: Start kafka Nodes
     hosts: kafka
@@ -19,7 +29,7 @@
         with_items:
             - "docker-compose up -d --build"
         args:
-           chdir: ~/resources/kafka0/
+           chdir: ~/resources/kafka/
         register: node_result
 
 

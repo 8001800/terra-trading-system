@@ -1,4 +1,12 @@
-[kafka]
-54.172.205.152
+[kafka0]
+35.171.18.64
+[kafka1]
+34.207.158.95
+[kafka2]
+100.27.22.181
+[kafka:children]
+kafka0
+kafka1
+kafka2
 [celery]
-54.174.44.142
+54.237.86.99

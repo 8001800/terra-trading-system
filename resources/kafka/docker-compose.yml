@@ -1,9 +1,6 @@
 version: '3.2'
 services:
-  zookeeper:
-    image: wurstmeister/zookeeper
-    ports:
-      - "2181:2181"
+  
   kafka:
     image: wurstmeister/kafka
     ports:
@@ -13,11 +10,13 @@ services:
          mode: host
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: ${ZOOKEEPER0}:2181,${ZOOKEEPER1}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_BROKER_ID: ${BROKER}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - "~/kafka:/kafka"
+      - "~/kafka/data:/kafka/kafka-logs-localhost.localdomain"
+      - "~/kafka/logs:/opt/kafka/logs"

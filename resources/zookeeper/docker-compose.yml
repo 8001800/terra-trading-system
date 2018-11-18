@@ -1,0 +1,17 @@
+version: '3'
+services:
+  zookeeper:
+    image: zookeeper:3.4.9
+    restart: always
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    network_mode: "host"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    environment:
+      ZOO_MY_ID: ${BROKER}
+      ZOO_SERVERS: server.1=${ZOOKEEPER1}:2888:3888 server.2=${ZOOKEEPER2}:2888:3888 server.3=${ZOOKEEPER3}:2888:3888
+
