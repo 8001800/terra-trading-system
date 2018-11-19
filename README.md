@@ -14,4 +14,7 @@
 http://www.ligen.pro/2018/01/02/Docker%20Compose%E6%90%AD%E5%BB%BA%E7%AE%80%E5%8D%95Kafka%E9%9B%86%E7%BE%A4/
 http://www.uml.org.cn/bigdata/201801112.asp
 3. celery config file: https://stackoverflow.com/questions/4763072/why-cant-it-find-my-celery-config-file
+4. Kafka Cluster: https://cn.aliyun.com/jiaocheng/771382.html
+https://www.jianshu.com/p/d77149efa59f
+
 
