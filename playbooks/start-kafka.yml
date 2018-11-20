@@ -1,5 +1,16 @@
 ---
   - name: copy kafka config
+    hosts: kafka
+    gather_facts: false
+    remote_user: ec2-user
+    tasks:
+      
+      - copy:
+            src: ../resources/kafka/
+            dest: ~/resources/kafka/
+
+
+  - name: copy kafka config
     hosts: kafka0
     gather_facts: false
     remote_user: ec2-user
@@ -17,6 +28,16 @@
       
       - copy:
             src: ../resources/kafka/env/1.env
+            dest: ~/resources/kafka/.env
+
+  - name: copy kafka config
+    hosts: kafka2
+    gather_facts: false
+    remote_user: ec2-user
+    tasks:
+      
+      - copy:
+            src: ../resources/kafka/env/2.env
             dest: ~/resources/kafka/.env
 
   - name: Start kafka Nodes

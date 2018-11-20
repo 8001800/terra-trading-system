@@ -4,13 +4,11 @@ services:
   kafka:
     image: wurstmeister/kafka
     ports:
-       - target: 9094
-         published: 9094
-         protocol: tcp
-         mode: host
+      - "9094:9094"
+    network_mode: "host"
     environment:
       HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
-      KAFKA_ZOOKEEPER_CONNECT: ${ZOOKEEPER0}:2181,${ZOOKEEPER1}:2181
+      KAFKA_ZOOKEEPER_CONNECT: ${ZOOKEEPER1}:2181,${ZOOKEEPER2}:2181,${ZOOKEEPER3}:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://_{HOSTNAME_COMMAND}:9094
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094

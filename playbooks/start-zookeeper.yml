@@ -47,8 +47,7 @@
       - name: Start Zookeeper
         command: "{{item}}"
         with_items:
-            - "sudo service iptables stop"
-            - "docker-compose up -d --build"
+            - "docker-compose up -d"
         args:
            chdir: ~/resources/zookeeper/
         register: node_result

@@ -50,7 +50,7 @@ resource "aws_instance" "celery" {
 resource "aws_instance" "kafka" {
   count           = 3
   ami             = "${var.aws_ami}"
-  instance_type   = "${var.instance_type_a1}"
+  instance_type   = "${var.instance_type}"
   key_name        = "${aws_key_pair.default.id}"
   
   
