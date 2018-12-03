@@ -7,6 +7,9 @@
 3. Kafka image: https://github.com/wurstmeister/kafka-docker
 4. Kafka Spark-streaming Cassandra image: https://github.com/Yannael/kafka-sparkstreaming-cassandra
 5. Celery image: https://github.com/williln/celery-docker-example
+6. trading system: https://github.com/ccxt/ccxt/blob/master/python/ccxt/base/__init__.py
+https://github.com/yasinkuyu/binance-trader
+https://github.com/freqtrade/freqtrade
 
 ## Reference
 1. Celery multi workers example: http://zerosre.com/2017/06/05/celery%E5%A4%9A%E4%B8%AAworker/
