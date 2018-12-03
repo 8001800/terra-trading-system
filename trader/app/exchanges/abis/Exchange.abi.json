@@ -1,0 +1,584 @@
+[
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "initialized",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "reserved",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "name": "NewCancelOrder",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewBestAsk",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewAsk",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewBid",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewBestBid",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "name": "sell",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "name": "NewOrder",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "bidId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "name": "askId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "name": "side",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "name": "NewTrade",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Pause",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Unpause",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipRenounced",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "initialize",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "sell",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "name": "tradeToken",
+        "type": "address"
+      },
+      {
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "buy",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "name": "cancelOrder",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "name": "tradeToken",
+        "type": "address"
+      }
+    ],
+    "name": "getOrderBookInfo",
+    "outputs": [
+      {
+        "name": "firstOrder",
+        "type": "uint64"
+      },
+      {
+        "name": "bestBid",
+        "type": "uint64"
+      },
+      {
+        "name": "bestAsk",
+        "type": "uint64"
+      },
+      {
+        "name": "lastOrder",
+        "type": "uint64"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "name": "getOrder",
+    "outputs": [
+      {
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "name": "isSell",
+        "type": "bool"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "name": "next",
+        "type": "uint64"
+      },
+      {
+        "name": "prev",
+        "type": "uint64"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "name": "tradeToken",
+        "type": "address"
+      }
+    ],
+    "name": "getOrderbookBids",
+    "outputs": [
+      {
+        "name": "price",
+        "type": "uint256[20]"
+      },
+      {
+        "name": "isSell",
+        "type": "bool[20]"
+      },
+      {
+        "name": "amount",
+        "type": "uint256[20]"
+      },
+      {
+        "name": "id",
+        "type": "uint256[20]"
+      },
+      {
+        "name": "items",
+        "type": "uint64"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "baseToken",
+        "type": "address"
+      },
+      {
+        "name": "tradeToken",
+        "type": "address"
+      }
+    ],
+    "name": "getOrderbookAsks",
+    "outputs": [
+      {
+        "name": "price",
+        "type": "uint256[20]"
+      },
+      {
+        "name": "isSell",
+        "type": "bool[20]"
+      },
+      {
+        "name": "amount",
+        "type": "uint256[20]"
+      },
+      {
+        "name": "id",
+        "type": "uint256[20]"
+      },
+      {
+        "name": "items",
+        "type": "uint64"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

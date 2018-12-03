@@ -2,10 +2,8 @@
 # @yasinkuyu
 
 # Define Python imports
-import os
 import sys
 import time
-import config
 import threading
 import math
 import logging
@@ -14,7 +12,7 @@ import logging.handlers
 
 # Define Custom imports
 from Database import Database
-from Orders import Orders
+from wrapper.BinanceWrapper import BinanceWrapper
 
 
 formater_str = '%(asctime)s,%(msecs)d %(levelname)s %(name)s: %(message)s'
@@ -123,7 +121,7 @@ class Trading():
         try:
 
             # Create order
-            orderId = Orders.buy_limit(symbol, quantity, buyPrice)
+            orderId = BinanceWrapper.buy_limit(symbol, quantity, buyPrice)
 
             # Database log
             Database.write([orderId, symbol, 0, buyPrice, 'BUY', quantity, self.option.profit])
@@ -148,7 +146,7 @@ class Trading():
         If not successful, the order will be canceled.
         '''
 
-        buy_order = Orders.get_order(symbol, orderId)
+        buy_order = BinanceWrapper.get_order(symbol, orderId)
 
         if buy_order['status'] == 'FILLED' and buy_order['side'] == 'BUY':
             #print('Buy order filled... Try sell...')
@@ -169,7 +167,7 @@ class Trading():
                 self.order_id = 0
                 return
 
-        sell_order = Orders.sell_limit(symbol, quantity, sell_price)
+        sell_order = BinanceWrapper.sell_limit(symbol, quantity, sell_price)
 
         sell_id = sell_order['orderId']
         #print('Sell order create id: %d' % sell_id)
@@ -205,7 +203,7 @@ class Trading():
 
             if self.stop(symbol, quantity, sell_id, last_price):
 
-                if Orders.get_order(symbol, sell_id)['status'] != 'FILLED':
+                if BinanceWrapper.get_order(symbol, sell_id)['status'] != 'FILLED':
                     #print('We apologize... Sold at loss...')
                     self.logger.info('We apologize... Sold at loss...')
 
@@ -217,8 +215,8 @@ class Trading():
 
             while (sell_status != 'FILLED'):
                 time.sleep(self.WAIT_TIME_CHECK_SELL)
-                sell_status = Orders.get_order(symbol, sell_id)['status']
-                lastPrice = Orders.get_ticker(symbol)
+                sell_status = BinanceWrapper.get_order(symbol, sell_id)['status']
+                lastPrice = BinanceWrapper.get_ticker(symbol)
                 #print('Status: %s Current price: %.8f Sell price: %.8f' % (sell_status, lastPrice, sell_price))
                 #print('Sold! Continue trading...')
 
@@ -231,7 +229,7 @@ class Trading():
 
     def stop(self, symbol, quantity, orderId, last_price):
         # If the target is not reached, stop-loss.
-        stop_order = Orders.get_order(symbol, orderId)
+        stop_order = BinanceWrapper.get_order(symbol, orderId)
 
         stopprice =  self.calc(float(stop_order['price']))
 
@@ -247,7 +245,7 @@ class Trading():
                 # Stop loss
                 if last_price >= lossprice:
 
-                    sello = Orders.sell_market(symbol, quantity)
+                    sello = BinanceWrapper.sell_market(symbol, quantity)
 
                     #print('Stop-loss, sell market, %s' % (last_price))
                     self.logger.info('Stop-loss, sell market, %s' % (last_price))
@@ -268,7 +266,7 @@ class Trading():
                             self.cancel(symbol, sell_id)
                             return False
                 else:
-                    sello = Orders.sell_limit(symbol, quantity, lossprice)
+                    sello = BinanceWrapper.sell_limit(symbol, quantity, lossprice)
                     print('Stop-loss, sell limit, %s' % (lossprice))
                     time.sleep(self.WAIT_TIME_STOP_LOSS)
                     statusloss = sello['status']
@@ -302,7 +300,7 @@ class Trading():
         while trading_size < self.MAX_TRADE_SIZE:
 
             # Order info
-            order = Orders.get_order(symbol, orderId)
+            order = BinanceWrapper.get_order(symbol, orderId)
 
             side  = order['side']
             price = float(order['price'])
@@ -320,7 +318,7 @@ class Trading():
 
                 if self.cancel(symbol, orderId):
 
-                    buyo = Orders.buy_market(symbol, quantity)
+                    buyo = BinanceWrapper.buy_market(symbol, quantity)
 
                     #print('Buy market order')
                     self.logger.info('Buy market order')
@@ -352,7 +350,7 @@ class Trading():
 
     def cancel(self, symbol, orderId):
         # If order is not filled, cancel it.
-        check_order = Orders.get_order(symbol, orderId)
+        check_order = BinanceWrapper.get_order(symbol, orderId)
 
         if not check_order:
             self.order_id = 0
@@ -360,7 +358,7 @@ class Trading():
             return True
 
         if check_order['status'] == 'NEW' or check_order['status'] != 'CANCELLED':
-            Orders.cancel_order(symbol, orderId)
+            BinanceWrapper.cancel_order(symbol, orderId)
             self.order_id = 0
             self.order_data = None
             return True
@@ -389,10 +387,10 @@ class Trading():
         quantity = self.quantity
 
         # Fetches the ticker price
-        lastPrice = Orders.get_ticker(symbol)
+        lastPrice = BinanceWrapper.get_ticker(symbol)
 
         # Order book prices
-        lastBid, lastAsk = Orders.get_order_book(symbol)
+        lastBid, lastAsk = BinanceWrapper.get_order_book(symbol)
 
         # Target buy price, add little increase #87
         buyPrice = lastBid + self.increasing
@@ -471,7 +469,7 @@ class Trading():
         symbol = self.option.symbol
 
         # Get symbol exchange info
-        symbol_info = Orders.get_info(symbol)
+        symbol_info = BinanceWrapper.get_info(symbol)
 
         if not symbol_info:
             #print('Invalid symbol, please try again...')
@@ -492,9 +490,9 @@ class Trading():
         filters = self.filters()['filters']
 
         # Order book prices
-        lastBid, lastAsk = Orders.get_order_book(symbol)
+        lastBid, lastAsk = BinanceWrapper.get_order_book(symbol)
 
-        lastPrice = Orders.get_ticker(symbol)
+        lastPrice = BinanceWrapper.get_ticker(symbol)
 
         minQty = float(filters['LOT_SIZE']['minQty'])
         minPrice = float(filters['PRICE_FILTER']['minPrice'])

@@ -8,8 +8,13 @@ from app.Messages import Messages
 # Define Custom import vars
 client = BinanceAPI(config.api_key, config.api_secret)
 
-class Orders():
- 
+class BinanceWrapper():
+
+    @staticmethod
+    def get_kline(market, limit=50):
+        return client.get_history(market, limit=50)
+
+
     @staticmethod
     def buy_limit(symbol, quantity, buyPrice):
 
