@@ -1,12 +1,12 @@
-from app.exchanges.TerrachainAPI import *
+from app.brokers.TerrachainAPI import *
 import json
 
 
-fo = open("app/exchanges/abis/Exchange.abi.json", "r")
+fo = open("../brokers/abis/Exchange.abi.json", "r")
 Exchangeabi=json.load(fo)
 fo.close()
 
-fo = open("app/exchanges/abis/ERC827.abi.json", "r")
+fo = open("../brokers/abis/ERC827.abi.json", "r")
 ERC827abi=json.load(fo)
 fo.close()
 

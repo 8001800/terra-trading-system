@@ -2,7 +2,7 @@
 # @yasinkuyu
 import config 
 
-from app.exchanges.BinanceAPI import BinanceAPI
+from app.brokers.BinanceAPI import BinanceAPI
 from app.Messages import Messages
 
 # Define Custom import vars
@@ -142,3 +142,48 @@ class Binance():
             
         except Exception as e:
             print('get_info Exception: %s' % e)
+
+# Balance
+
+    def balances(self):
+        balances = client.get_account()
+
+        for balance in balances['balances']:
+            if float(balance['locked']) > 0 or float(balance['free']) > 0:
+                print('%s: %s' % (balance['asset'], balance['free']))
+
+    def balance(self, asset="BTC"):
+        balances = client.get_account()
+
+        balances['balances'] = {item['asset']: item for item in balances['balances']}
+
+        print(balances['balances'][asset]['free'])
+
+    def orders(self, symbol, limit):
+        orders = client.get_open_orders(symbol, limit)
+        print(orders)
+
+    def tickers(self):
+        return client.get_all_tickers()
+
+    def server_time(self):
+        return client.get_server_time()
+
+    def openorders(self):
+        return client.get_open_orders()
+
+    def profits(self, asset='BTC'):
+
+        coins = client.get_products()
+
+        for coin in coins['data']:
+
+            if coin['quoteAsset'] == asset:
+
+                orders = client.get_order_books(coin['symbol'], 5)
+                lastBid = float(orders['bids'][0][0]) #last buy price (bid)
+                lastAsk = float(orders['asks'][0][0]) #last sell price (ask)
+
+                profit = (lastAsk - lastBid) /  lastBid * 100
+
+                print('%.2f%% profit : %s (bid:%.8f-ask%.8f)' % (profit, coin['symbol'], lastBid, lastAsk))

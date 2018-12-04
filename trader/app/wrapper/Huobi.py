@@ -1,4 +1,4 @@
-from app.exchanges.HuobiServices import *
+from app.brokers.HuobiServices import *
 
 
 class Huobi:
