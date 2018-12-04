@@ -12,8 +12,11 @@ import logging.handlers
 
 # Define Custom imports
 from Database import Database
-from wrapper.BinanceWrapper import BinanceWrapper
-from wrapper.HuobiWrapper import HuobiWrapper
+from wrapper.Binance import Binance
+from wrapper.Huobi import Huobi
+from wrapper.Terrachain import Terrachain
+from app.datafeed.Datafeed import Datafeed
+import config
 
 
 formater_str = '%(asctime)s,%(msecs)d %(levelname)s %(name)s: %(message)s'
@@ -36,7 +39,6 @@ BNB_COMMISION   = 0.0005
 
 
 class Trading:
-
     # Define trade vars  
     order_id = 0
     order_data = None
@@ -70,30 +72,26 @@ class Trading:
     # Type of commision, Default BNB_COMMISION
     commision = BNB_COMMISION
 
-    def __init__(self, option):
-        print("options: {0}".format(option))
-
-        # Get argument parse options
-        self.option = option
+    def __init__(self):
 
         # Define parser vars
-        self.order_id = self.option.orderid
-        self.quantity = self.option.quantity
-        self.wait_time = self.option.wait_time
-        self.stop_loss = self.option.stop_loss
-
-        self.increasing = self.option.increasing
-        self.decreasing = self.option.decreasing
+        self.order_id = config.orderid
+        self.quantity = config.quantity
+        self.wait_time = config.wait_time
+        self.stop_loss = config.stop_loss
+        self.exchange = config.exchange
+        self.increasing = config.increasing
+        self.decreasing = config.decreasing
 
         # BTC amount
-        self.amount = self.option.amount
+        self.amount = config.amount
 
         # Type of commision
-        if self.option.commision == 'TOKEN':
+        if config.commision == 'TOKEN':
             self.commision = TOKEN_COMMISION
 
         # setup Logger
-        self.logger =  self.setup_logger(self.option.symbol, debug=self.option.debug)
+        self.logger =  self.setup_logger(config.symbol, debug=config.debug)
 
     def setup_logger(self, symbol, debug=True):
         """Function setup as many loggers as you want"""
@@ -113,164 +111,43 @@ class Trading:
         logger.addHandler(stout_handler)
         return logger
 
-
-    def buy(self,symbol,quantity,buyPrice,exchange):
-
+    def buy(self, symbol, quantity, buyPrice, exchange):
         try:
             # Create order
-            orderId = locals()[exchange].buy_limit(symbol, quantity, buyPrice)
+            orderId = globals()[exchange].buy_limit(symbol, quantity, buyPrice)
 
             #print('Buy order created id:%d, q:%.8f, p:%.8f' % (orderId, quantity, float(buyPrice)))
-            self.logger.info('%s : Buy order created id:%d, q:%.8f, p:%.8f' % (symbol, orderId, quantity, float(buyPrice)))
-            self.order_id = orderId
-            return orderId
+            self.logger.info('%s : Buy order created , q:%.8f, p:%.8f' % (symbol, quantity, float(buyPrice)))
+            #self.order_id = orderId
+            #return orderId
 
         except Exception as e:
             self.logger.debug('Buy error: %s' % (e))
             time.sleep(self.WAIT_TIME_BUY_SELL)
             return None
 
-    def sell(self, symbol, quantity, orderId, sell_price, last_price, exchange):
+    def sell(self, symbol, quantity, sell_price, exchange):
         try:
             # Create order
-            orderId = locals()[exchange].sell_limit(symbol, quantity, sell_price)
+            orderId = globals()[exchange].sell_limit(symbol, quantity, sell_price)
 
             # print('Buy order created id:%d, q:%.8f, p:%.8f' % (orderId, quantity, float(buyPrice)))
             self.logger.info(
-                '%s : Buy order created id:%d, q:%.8f, p:%.8f' % (symbol, orderId, quantity, float(sell_price)))
-            self.order_id = orderId
-            return orderId
+                '%s : Buy order created , q:%.8f, p:%.8f' % (symbol, quantity, float(sell_price)))
+            #self.order_id = orderId
+            #return orderId
 
         except Exception as e:
             self.logger.debug('Buy error: %s' % (e))
             time.sleep(self.WAIT_TIME_BUY_SELL)
             return None
 
-    def stop(self, symbol, quantity, orderId, last_price,exchange):
-        # If the target is not reached, stop-loss.
-        stop_order = locals()[exchange].get_order(symbol, orderId)
-
-        stopprice =  self.calc(float(stop_order['price']))
-
-        lossprice = stopprice - (stopprice * self.stop_loss / 100)
-
-        status = stop_order['status']
-
-        # Order status
-        if status == 'NEW' or status == 'PARTIALLY_FILLED':
-
-            if self.cancel(symbol, orderId):
-
-                # Stop loss
-                if last_price >= lossprice:
-
-                    sello = locals()[exchange].sell_market(symbol, quantity)
-
-                    #print('Stop-loss, sell market, %s' % (last_price))
-                    self.logger.info('Stop-loss, sell market, %s' % (last_price))
-
-                    sell_id = sello['orderId']
-
-                    if sello == True:
-                        return True
-                    else:
-                        # Wait a while after the sale to the loss.
-                        time.sleep(self.WAIT_TIME_STOP_LOSS)
-                        statusloss = sello['status']
-                        if statusloss != 'NEW':
-                            print('Stop-loss, sold')
-                            self.logger.info('Stop-loss, sold')
-                            return True
-                        else:
-                            self.cancel(symbol, sell_id)
-                            return False
-                else:
-                    sello = locals()[exchange].sell_limit(symbol, quantity, lossprice)
-                    sell_id = sello['orderId']
-                    print('Stop-loss, sell limit, %s' % (lossprice))
-                    time.sleep(self.WAIT_TIME_STOP_LOSS)
-                    statusloss = sello['status']
-                    if statusloss != 'NEW':
-                        print('Stop-loss, sold')
-                        return True
-                    else:
-                        self.cancel(symbol, sell_id)
-                        return False
-            else:
-                print('Cancel did not work... Might have been sold before stop loss...')
-                return True
-
-        elif status == 'FILLED':
-            self.order_id = 0
-            self.order_data = None
-            print('Order filled')
-            return True
-        else:
-            return False
-
     def check(self, symbol, orderId, quantity, exchange):
-        # If profit is available and there is no purchase from the specified price, take it with the market.
-
-        # Do you have an open order?
-        self.check_order()
-
-        trading_size = 0
-        time.sleep(self.WAIT_TIME_BUY_SELL)
-
-        while trading_size < self.MAX_TRADE_SIZE:
-
-            # Order info
-            order = locals()[exchange].get_order(symbol, orderId)
-
-            side  = order['side']
-            price = float(order['price'])
-
-            # TODO: Sell partial qty
-            orig_qty = float(order['origQty'])
-            self.buy_filled_qty = float(order['executedQty'])
-
-            status = order['status']
-
-            #print('Wait buy order: %s id:%d, price: %.8f, orig_qty: %.8f' % (symbol, order['orderId'], price, orig_qty))
-            self.logger.info('Wait buy order: %s id:%d, price: %.8f, orig_qty: %.8f' % (symbol, order['orderId'], price, orig_qty))
-
-            if status == 'NEW':
-
-                if self.cancel(symbol, orderId):
-
-                    buyo = locals()[exchange].buy_market(symbol, quantity)
-
-                    #print('Buy market order')
-                    self.logger.info('Buy market order')
-
-                    self.order_id = buyo['orderId']
-                    self.order_data = buyo
-
-                    if buyo == True:
-                        break
-                    else:
-                        trading_size += 1
-                        continue
-                else:
-                    break
-
-            elif status == 'FILLED':
-                self.order_id = order['orderId']
-                self.order_data = order
-                #print('Filled')
-                self.logger.info('Filled')
-                break
-            elif status == 'PARTIALLY_FILLED':
-                #print('Partial filled')
-                self.logger.info('Partial filled')
-                break
-            else:
-                trading_size += 1
-                continue
+        pass
 
     def cancel(self, symbol, orderId, exchange):
         # If order is not filled, cancel it.
-        check_order = locals()[exchange].get_order(symbol, orderId)
+        check_order = globals()[exchange].get_order(symbol, orderId)
 
         if not check_order:
             self.order_id = 0
@@ -283,34 +160,20 @@ class Trading:
             self.order_data = None
             return True
 
-    def calc(self, lastBid):
-        try:
-
-            #Estimated sell price considering commision
-            return lastBid + (lastBid * self.option.profit / 100) + (lastBid *self.commision)
-            #return lastBid + (lastBid * self.option.profit / 100)
-
-        except Exception as e:
-            print('Calc Error: %s' % (e))
-            return
-
     def check_order(self):
         # If there is an open order, exit.
         if self.order_id > 0:
             exit(1)
-
-    def action(self, symbol):
-        pass
 
     def logic(self):
         return 0
 
     def filters(self):
 
-        symbol = self.option.symbol
+        symbol = config.symbol
 
         # Get symbol exchange info
-        symbol_info = BinanceWrapper.get_info(symbol)
+        symbol_info = Binance.get_info(symbol)
 
         if not symbol_info:
             #print('Invalid symbol, please try again...')
@@ -327,18 +190,18 @@ class Trading:
     def validate(self):
 
         valid = True
-        symbol = self.option.symbol
+        symbol = config.symbol
         filters = self.filters()['filters']
 
         # Order book prices
-        lastBid, lastAsk = BinanceWrapper.get_order_book(symbol)
+        lastBid, lastAsk = Binance.get_order_book(symbol)
 
-        lastPrice = BinanceWrapper.get_ticker(symbol)
+        lastPrice = Binance.get_ticker(symbol)
 
         minQty = float(filters['LOT_SIZE']['minQty'])
         minPrice = float(filters['PRICE_FILTER']['minPrice'])
         minNotional = float(filters['MIN_NOTIONAL']['minNotional'])
-        quantity = float(self.option.quantity)
+        quantity = float(config.quantity)
 
         # stepSize defines the intervals that a quantity/icebergQty can be increased/decreased by.
         stepSize = float(filters['LOT_SIZE']['stepSize'])
@@ -347,11 +210,11 @@ class Trading:
         tickSize = float(filters['PRICE_FILTER']['tickSize'])
 
         # If option increasing default tickSize greater than
-        if (float(self.option.increasing) < tickSize):
+        if (float(config.increasing) < tickSize):
             self.increasing = tickSize
 
         # If option decreasing default tickSize greater than
-        if (float(self.option.decreasing) < tickSize):
+        if (float(config.decreasing) < tickSize):
             self.decreasing = tickSize
 
         # Just for validation
@@ -398,12 +261,15 @@ class Trading:
         if not valid:
             exit(1)
 
+    def action(self):
+        pass
+
     def run(self):
 
         cycle = 0
         actions = []
 
-        symbol = self.option.symbol
+        symbol = config.symbol
 
 
         print('\n')
@@ -415,21 +281,21 @@ class Trading:
         print('Trading Symbol: %s' % symbol)
         print('Buy Quantity: %.8f' % self.quantity)
         print('Stop-Loss Amount: %s' % self.stop_loss)
-        #print('Estimated profit: %.8f' % (self.quantity*self.option.profit))
+        #print('Estimated profit: %.8f' % (self.quantity*config.profit))
 
-        if self.option.mode == 'range':
+        if config.mode == 'range':
 
-           if self.option.buyprice == 0 or self.option.sellprice == 0:
+           if config.buyprice == 0 or config.sellprice == 0:
                print('Please enter --buyprice / --sellprice\n')
                exit(1)
 
            print('Range Mode Options:')
-           print('\tBuy Price: %.8f', self.option.buyprice)
-           print('\tSell Price: %.8f', self.option.sellprice)
+           print('\tBuy Price: %.8f', config.buyprice)
+           print('\tSell Price: %.8f', config.sellprice)
 
         else:
             print('Profit Mode Options:')
-            print('\tPreferred Profit: %0.2f%%' % self.option.profit)
+            print('\tPreferred Profit: %0.2f%%' % config.profit)
             print('\tBuy Price : (Bid+ --increasing %.8f)' % self.increasing)
             print('\tSell Price: (Ask- --decreasing %.8f)' % self.decreasing)
 
@@ -450,25 +316,25 @@ class Trading:
             time.sleep(self.wait_time - (endTime - startTime))
 
             # 0 = Unlimited loop
-            if self.option.loop > 0:
+            if config.loop > 0:
                 cycle = cycle + 1
 
         """
 
-        while (cycle <= self.option.loop):
+        while (cycle <= config.loop):
 
-           startTime = time.time()
+            startTime = time.time()
+            tick=getattr(Datafeed, config.datafeed_type)(symbol, self.exchange)
+            actionTrader = threading.Thread(target=self.action, args=(symbol,tick))
+            actions.append(actionTrader)
+            actionTrader.start()
 
-           actionTrader = threading.Thread(target=self.action, args=(symbol,))
-           actions.append(actionTrader)
-           actionTrader.start()
+            endTime = time.time()
 
-           endTime = time.time()
+            if endTime - startTime < self.wait_time:
 
-           if endTime - startTime < self.wait_time:
+                time.sleep(self.wait_time - (endTime - startTime))
 
-               time.sleep(self.wait_time - (endTime - startTime))
-
-               # 0 = Unlimited loop
-               if self.option.loop > 0:
-                   cycle = cycle + 1
+                # 0 = Unlimited loop
+                if config.loop > 0:
+                    cycle = cycle + 1

@@ -30,7 +30,7 @@ class TerrachainAPI:
        
         nonce = self.web3Instance.eth.getTransactionCount(config.USER_ADDRESS)
         
-        sellData = self.exchange.functions.sell(config.ETH_TOKEN_ADDRESS, self.trade_token_add,  config.USER_ADDRESS, self.web3Instance.toWei(str(tradeTokenAmount),'ether'), self.web3Instance.toWei(str(tradePrice),'ether')).buildTransaction({'gas': 500000, 'gasPrice': self.web3Instance.toWei('1', 'gwei'),'nonce': nonce,'value': self.web3Instance.toWei(str(tradeTokenAmount),'ether')})
+        sellData = self.exchange.functions.sell(config.ETH_TOKEN_ADDRESS, self.trade_token_add,  config.USER_ADDRESS, self.web3Instance.toWei(str(tradeTokenAmount),'ether'), self.web3Instance.toWei(str(tradePrice),'ether')).buildTransaction({'gas': 500000, 'gasPrice': self.web3Instance.toWei('3', 'gwei'),'nonce': nonce,'value': self.web3Instance.toWei(str(tradeTokenAmount),'ether')})
         signed_txn = self.web3Instance.eth.account.signTransaction(sellData, private_key=config.USER_ADDRESS_PRIVATE_KEY)
         txhash=self.web3Instance.eth.sendRawTransaction(signed_txn.rawTransaction)   
         return txhash.hex()

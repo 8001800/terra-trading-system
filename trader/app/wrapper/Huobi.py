@@ -1,13 +1,13 @@
 from app.exchanges.HuobiServices import *
 
 
-class HuobiWrapper:
+class Huobi:
 
     def __init__(self):
         pass
 
     @staticmethod
-    def get_kline(symbol, period, size=150):
+    def get_history(symbol, period, size=150):
         return get_kline(symbol, period, size=150)
 
     @staticmethod

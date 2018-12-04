@@ -2,11 +2,11 @@ from app.exchanges.TerrachainAPI import *
 import json
 
 
-fo = open("exchanges/abis/Exchange.abi.json", "r")
+fo = open("app/exchanges/abis/Exchange.abi.json", "r")
 Exchangeabi=json.load(fo)
 fo.close()
 
-fo = open("exchanges/abis/ERC827.abi.json", "r")
+fo = open("app/exchanges/abis/ERC827.abi.json", "r")
 ERC827abi=json.load(fo)
 fo.close()
 
@@ -16,12 +16,12 @@ rpc_url="https://gaia.terrachain.network"
 
 client = TerrachainAPI(Exchangeabi,ERC827abi,CLC_ADDRESS, rpc_url)
 
-class TerrachainWrapper:
+class Terrachain:
 
     @staticmethod
-    def buy_limit(quantity, buyPrice):
+    def buy_limit(symbol,quantity, buyPrice):
         return client.buy_token(quantity, buyPrice)
 
     @staticmethod
-    def sell_limit(quantity, buyPrice):
-        return client.sell_token(quantity, buyPrice)
+    def sell_limit(symbol,quantity, sellprice):
+        return client.sell_token(quantity, sellprice)
