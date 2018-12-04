@@ -2,19 +2,12 @@
 # @yasinkuyu
 
 # Define Python imports
-import sys
 import time
 import threading
-import math
-import logging
 import logging.handlers
 
 
 # Define Custom imports
-from Database import Database
-from wrapper.Binance import Binance
-from wrapper.Huobi import Huobi
-from wrapper.Terrachain import Terrachain
 from app.datafeed.Datafeed import Datafeed
 import config
 

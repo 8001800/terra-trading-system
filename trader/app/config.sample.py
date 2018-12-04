@@ -28,6 +28,14 @@ GET_RECEIPT_INTERVAL_IN_MILLISECONDS=3000
 GAS_PRICE=1
 
 
+#exchange database
+server = ''
+port = 27017
+db = ""
+name = ''
+passwd = ''
+col = ''
+
 
 #parameters
 quantity=0                             #Buy/Sell Quantity
