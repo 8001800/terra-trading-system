@@ -19,5 +19,5 @@ http://www.uml.org.cn/bigdata/201801112.asp
 3. celery config file: https://stackoverflow.com/questions/4763072/why-cant-it-find-my-celery-config-file
 4. Kafka Cluster: https://cn.aliyun.com/jiaocheng/771382.html
 https://www.jianshu.com/p/d77149efa59f
-
+5. Celery Intro: https://www.pyfdtic.com/2018/03/16/python-celery-%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/
 
