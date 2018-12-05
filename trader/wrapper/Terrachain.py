@@ -13,7 +13,7 @@ fo.close()
 
 
 rel_path_827 = "brokers/abis/ERC827.abi.json"
-abs_file_path_827 = os.path.join(script_dir, rel_path_exchange)
+abs_file_path_827 = os.path.join(script_dir, rel_path_827)
 fo = open(abs_file_path_827, "r")
 ERC827abi=json.load(fo)
 fo.close()

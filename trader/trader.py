@@ -5,7 +5,7 @@
 import sys
 import argparse
 
-sys.path.insert(0, './app')
+sys.path.insert(0, './exchange')
 
 from Trading import Trading
 
