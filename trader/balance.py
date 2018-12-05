@@ -3,8 +3,8 @@
 # @yasinkuyu
 
 import sys
-sys.path.insert(0, './app')
-from app.brokers.BinanceAPI import BinanceAPI
+sys.path.insert(0, './exchange')
+from brokers import BinanceAPI
 import config
 
 class Binance:

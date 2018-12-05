@@ -1,5 +1,5 @@
 from web3 import Web3
-import config
+import exchange.config as config
 
 
 class TerrachainAPI:

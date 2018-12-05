@@ -5,8 +5,6 @@
 # @QQ      : 375235513
 # @github  : https://github.com/KlausQIU
 
-from app.brokers.Utils import *
-
 '''
 Market data API
 '''

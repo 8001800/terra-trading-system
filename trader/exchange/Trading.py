@@ -6,10 +6,12 @@ import time
 import threading
 import logging.handlers
 
-
+from wrapper.Terrachain import Terrachain
+from wrapper.Binance import Binance
+from wrapper.Huobi import Huobi
 # Define Custom imports
-from app.datafeed.Datafeed import Datafeed
-import config
+from exchange.datafeed.Datafeed import Datafeed
+import exchange.config as config
 
 
 formater_str = '%(asctime)s,%(msecs)d %(levelname)s %(name)s: %(message)s'

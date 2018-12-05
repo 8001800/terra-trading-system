@@ -1,31 +1,22 @@
 # -*- coding: UTF-8 -*-
-from app.Trading import *
-import math
-import talib
 import config
-from backtrader import Strategy
 import backtrader as bt
-import backtrader.feeds as btfeeds
 import pandas as pd
-from app.database.MongoDBPipeline import MongoDBPipeline
-from app.datafeed.Datafeed import PandasData
-import matplotlib
+from db import MongoDBPipeline
+from exchange.datafeed.Datafeed import PandasData
 
-class Default(globals()[config.app_mode]):
+
+class Default(bt.Strategy):
 
     def __init__(self):
         # Keep a reference to the "close" line in the data[0] dataseries
         self.dataclose = self.datas[0].close
-        d=0
+
     def next(self):
         quantity = 1
         sell_price = 0.00006
         #self.buy(symbol, quantity, sell_price, self.exchange)
 
-
-def trading():
-    t = Default()
-    t.run()
 
 def database():
     server = config.server
@@ -39,7 +30,8 @@ def database():
     data = pd.DataFrame(dd)
     return data
 
-def strategy():
+
+if __name__ == '__main__':
     # Create a cerebro entity
     cerebro = bt.Cerebro()
 
@@ -54,11 +46,6 @@ def strategy():
 
     # Run over everything
     cerebro.run()
-    print(1)
+
     # Plot the result
     cerebro.plot(style='bar')
-
-
-if __name__ == '__main__':
-    globals()[config.app_mode.lower()]()
-    #strategy()

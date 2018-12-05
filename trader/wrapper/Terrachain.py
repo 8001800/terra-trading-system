@@ -1,12 +1,20 @@
-from app.brokers.TerrachainAPI import *
 import json
+from brokers.TerrachainAPI import TerrachainAPI
 
+import os
+script_dir = os.path.dirname(os.path.dirname(__file__)) #<-- absolute dir the script is in
 
-fo = open("../brokers/abis/Exchange.abi.json", "r")
+rel_path_exchange = "brokers/abis/Exchange.abi.json"
+abs_file_path_exchange = os.path.join(script_dir, rel_path_exchange)
+print(abs_file_path_exchange)
+fo = open(abs_file_path_exchange, "r")
 Exchangeabi=json.load(fo)
 fo.close()
 
-fo = open("../brokers/abis/ERC827.abi.json", "r")
+
+rel_path_827 = "brokers/abis/ERC827.abi.json"
+abs_file_path_827 = os.path.join(script_dir, rel_path_exchange)
+fo = open(abs_file_path_827, "r")
 ERC827abi=json.load(fo)
 fo.close()
 

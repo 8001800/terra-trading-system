@@ -28,7 +28,7 @@ class MongoDBPipeline(object,):
         #self.db_conn = self.client[self.db]
         print("connected")
 
-    def process_item(self, item,col):
+    def process_item(self, item, col):
         #err_msg = ''
         pre_dic = dict(item)
         #col = pre_dic["col"]

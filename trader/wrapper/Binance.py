@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 # @yasinkuyu
-import config 
+import exchange.config as config
 
-from app.brokers.BinanceAPI import BinanceAPI
-from app.Messages import Messages
+from brokers.BinanceAPI import BinanceAPI
+from exchange.Messages import Messages
 
 # Define Custom import vars
 client = BinanceAPI(config.api_key, config.api_secret)
@@ -13,7 +13,6 @@ class Binance():
     @staticmethod
     def get_history(market, limit=50):
         return client.get_history(market, limit=50)
-
 
     @staticmethod
     def buy_limit(symbol, quantity, buyPrice):

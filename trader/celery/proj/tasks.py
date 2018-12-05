@@ -1,38 +1,26 @@
 from __future__ import absolute_import
-import time
 from binance.client import Client
 from binance.websockets import BinanceSocketManager
 from kafka import KafkaProducer
 import json
-from celery.proj.celery import app
-from kafka import TopicPartition
+from proj.celery import application
 from kafka import KafkaConsumer
 import boto3
+import proj.settings
 
 
 def handle_message(msg, symb, producer):
     print(msg)
     producer.send(symb, json.dumps(msg))
 
-
-f = open('config', 'r')
-for line in f:
-    if line.startswith("binance_key"):
-        PUBLIC = line.split("=")[1].replace(" ", "").replace("\"", "").replace("\n", "")
-    if line.startswith("binance_secret"):
-        SECRET = line.split("=")[1].replace(" ", "").replace("\"", "").replace("\n", "")
-    if line.startswith("bootstrap_servers"):
-        bootstrap_servers = line.split("=")[1].replace(" ", "").replace("\"", "").replace("\n", "")
-
-
 # binance_streaming.s('ETHUSDT').apply_async(queue = 'foo1')
 
 
-@app.task
+@application.task
 def binance_streaming(symb):
-    client = Client(api_key=PUBLIC, api_secret=SECRET, requests_params={"timeout": 30})
+    client = Client(api_key=settings.binance_key, api_secret=settings.binance_secret, requests_params={"timeout": 30})
     bm = BinanceSocketManager(client)
-    producer = KafkaProducer(bootstrap_servers=bootstrap_servers,
+    producer = KafkaProducer(bootstrap_servers=settings.bootstrap_servers,
                              value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     # ETHUSDT
     conn_key = bm.start_trade_socket(symb,
@@ -44,7 +32,7 @@ def binance_streaming(symb):
     # bm.stop_socket(conn_key)
 
 
-@app.task
+@application.task
 def save_to_s3(symbol):
     bucketName = "elasticbeanstalk-us-east-1-559984272434"
     Key = "producer.py"

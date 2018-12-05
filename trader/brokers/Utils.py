@@ -14,7 +14,7 @@ import urllib
 import urllib.parse
 import urllib.request
 import requests
-from app.config import *
+from exchange.config import *
 
 
 
